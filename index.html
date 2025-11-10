@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>聊天记录 Demo</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <h1>ChatGPT 对话 Demo</h1>
+        <p class="subtitle">
+          根据分享链接整理的页面示例，可以快速浏览对话要点。
+        </p>
+      </div>
+      <a
+        class="share-link"
+        href="https://chatgpt.com/share/6911b067-aa2c-8012-af9c-622d9f93e0f3"
+        target="_blank"
+        rel="noopener noreferrer"
+      >查看原始分享</a>
+    </header>
+
+    <main class="layout">
+      <aside class="context-panel">
+        <section>
+          <h2>对话背景</h2>
+          <p>
+            该对话围绕如何构建个人智能体测试 Demo 展开，重点讨论了功能模块、
+            数据结构以及前端呈现方式。本页面将核心步骤可视化，帮助开发者快速理解整体方案。
+          </p>
+        </section>
+        <section class="key-points">
+          <h2>要点速览</h2>
+          <ul id="keyPointsList"></ul>
+        </section>
+        <section>
+          <h2>导出</h2>
+          <button id="exportBtn" type="button">导出为 Markdown</button>
+        </section>
+      </aside>
+
+      <section class="conversation">
+        <div class="toolbar">
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="搜索消息关键词..."
+            aria-label="搜索消息关键词"
+          />
+          <label class="toggle">
+            <input id="groupToggle" type="checkbox" />
+            <span>按主题分组</span>
+          </label>
+        </div>
+        <div id="conversationContainer" class="conversation-container"></div>
+      </section>
+    </main>
+
+    <template id="messageTemplate">
+      <article class="message">
+        <header class="message-header">
+          <span class="role"></span>
+          <time class="timestamp"></time>
+        </header>
+        <div class="content"></div>
+        <footer class="message-footer">
+          <button class="copy-btn" type="button">复制</button>
+          <span class="topic-tag"></span>
+        </footer>
+      </article>
+    </template>
+
+    <script src="script.js"></script>
+  </body>
+</html>
