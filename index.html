@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Talent Guide – 动态引导树 Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <div class="brand-block">
+          <h1>AI Talent Guide</h1>
+          <p class="tagline">动态引导树体验（MVP 模拟环境）</p>
+        </div>
+        <div class="progress-block" aria-label="会话进度">
+          <div class="progress-bar">
+            <span id="progressValue" style="width: 0%"></span>
+          </div>
+          <span id="progressLabel" class="progress-label">0 / 12</span>
+        </div>
+        <button id="resetBtn" type="button" class="ghost-btn">重新开始</button>
+      </header>
+
+      <main class="main-layout">
+        <aside class="insight-panel">
+          <section class="session-meta">
+            <h2>会话概览</h2>
+            <dl>
+              <div>
+                <dt>Session ID</dt>
+                <dd id="sessionId">—</dd>
+              </div>
+              <div>
+                <dt>当前状态</dt>
+                <dd id="currentState">ENTER</dd>
+              </div>
+              <div>
+                <dt>循环次数</dt>
+                <dd id="loopCount">0</dd>
+              </div>
+            </dl>
+          </section>
+          <section class="top-hypothesis">
+            <h2>天赋假说</h2>
+            <div id="hypothesisChips" class="chips"></div>
+            <p class="hint">按状态机阈值自动刷新 Top 2 维度。</p>
+          </section>
+          <section class="signals-panel">
+            <h2>信号权重</h2>
+            <ul id="signalList" class="signal-list"></ul>
+          </section>
+          <section class="actions">
+            <h2>导出与测试</h2>
+            <button id="exportMarkdownBtn" type="button" class="primary-btn">
+              导出 Markdown 报告
+            </button>
+            <button id="loadScenarioBtn" type="button" class="ghost-btn">
+              载入测试用例
+            </button>
+          </section>
+        </aside>
+
+        <section class="conversation-area">
+          <div class="conversation-header">
+            <div class="state-pill" id="statePill">ENTER</div>
+            <span class="conversation-hint"
+              >遵循 ENTER → PROBE → REFLECT → VALIDATE → FOCUS → APPLY → REPORT → LOOP</span
+            >
+          </div>
+          <div id="conversationContainer" class="conversation-container" aria-live="polite"></div>
+
+          <div id="reportPreview" class="report-preview" hidden>
+            <header>
+              <h2>画像 1.0 预览</h2>
+              <button id="toggleReportBtn" type="button" class="ghost-btn">收起</button>
+            </header>
+            <article id="reportContent" class="report-content"></article>
+          </div>
+
+          <form id="composer" class="composer" autocomplete="off">
+            <label class="sr-only" for="userInput">回复</label>
+            <textarea
+              id="userInput"
+              name="userInput"
+              rows="2"
+              placeholder="输入你的回应，Enter 发送"
+              required
+            ></textarea>
+            <div class="composer-actions">
+              <button id="sendBtn" type="submit" class="primary-btn">发送</button>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <template id="messageTemplate">
+      <article class="message">
+        <header class="message-header">
+          <span class="role"></span>
+          <time class="timestamp"></time>
+        </header>
+        <div class="message-body">
+          <p class="state-tag"></p>
+          <div class="content"></div>
+        </div>
+        <footer class="message-footer">
+          <button class="ghost-btn copy-btn" type="button">复制</button>
+        </footer>
+      </article>
+    </template>
+
+    <div id="toast" class="toast" role="status" hidden></div>
+
+    <script src="script.js" type="module"></script>
+  </body>
+</html>
