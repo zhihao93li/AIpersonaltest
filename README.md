@@ -8,18 +8,26 @@
 - **启发式信号抽取与向量映射**：基于 PRD 中的关键词词表实现本地 scoring，引擎实时维护 8 个 Signals 与 8 个 Vector 维度，并按照阈值（Focus ≥ 0.68，Apply/Report ≥ 0.75）推进状态。
 - **画像 1.0 生成**：自动生成 Markdown 报告，包含 Top 3 向量、证据引用、下一步建议，可一键导出并在 UI 中预览。
 - **监控面板**：左侧侧栏实时展示 Session ID、当前状态、Loop 次数、信号权重与 Top2 假说 Chips，便于测试与调参。
-- **测试用例回放**：内置“高理解”“高创造”两类典型用户脚本，用于验证评分与状态转移。
+- **测试用例回放**：内置"高理解""高创造"两类典型用户脚本，用于验证评分与状态转移。
+
+## 目录结构
+
+- `index.html`：页面骨架与静态内容。
+- `styles.css`：页面样式与响应式布局。
+- `script.js`：渲染对话、搜索、分组、复制与 Markdown 导出逻辑。
 
 ## 快速预览
 
-1. 安装任意静态服务，例如使用 Python：
+1. **直接打开**：双击 `index.html` 或在浏览器中打开它即可离线浏览。
+2. **启动本地服务器**：若需要避免浏览器的本地文件安全限制，可在项目根目录执行：
 
    ```bash
    python -m http.server 8000
    ```
 
-2. 访问 `http://localhost:8000`，浏览器即呈现 Demo。
+   然后访问 `http://localhost:8000` 预览 Demo。
 3. 页面加载后系统自动进入 `ENTER`，随后发出首个 PROBE（A 维度）探针，按提示互动即可体验完整链路。
+4. **使用 VS Code Live Server 等扩展**：右键 `index.html` 选择 "Open with Live Server" 也可即时预览。
 
 ## 关键实现说明
 
@@ -32,7 +40,7 @@
 ### 信号抽取与向量映射
 
 - `analyzeSignals` 依据 PRD 词表统计命中次数，每次命中 +2，强情绪词额外 +2，负情绪词 -1。
-- `applySignalUpdate` 在纠偏时支持减去最近一次加权，满足“强否定纠偏”测试场景。
+- `applySignalUpdate` 在纠偏时支持减去最近一次加权，满足"强否定纠偏"测试场景。
 - `vectorMapping` 实现八个向量分量，`norm` 进行归一化（上限 1.0），`rankVectors` 负责排序与 Chips 渲染。
 
 ### 报告输出
@@ -47,7 +55,7 @@
 1. **高理解型用户**：多次触发 `abstract_think` 与 `system_opt`，确保 `understand` ≥ 0.7 后进入 APPLY、REPORT。
 2. **高创造型用户**：聚焦 `tinker_bias`、`aesthetic_sense`，验证创造向量的晋级流程。
 
-点击“载入测试用例”按钮，根据弹窗输入编号即可自动回放，快速验证状态机稳定性。
+点击"载入测试用例"按钮，根据弹窗输入编号即可自动回放，快速验证状态机稳定性。
 
 ## 后续扩展
 
@@ -56,3 +64,15 @@
 - 多语言：依据 `locale` 扩展中英文 prompt/模板；当前 Demo 默认 `zh-CN`。
 
 欢迎基于本 Demo 继续扩展 LLM 函数调用、PDF 导出与二次画像体验。
+
+## 修改后如何提交
+
+```bash
+git status
+# 确认文件变更
+
+git add .
+git commit -m "Update demo instructions"
+```
+
+若需推送到远程仓库，执行 `git push`。
