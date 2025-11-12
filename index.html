@@ -3,66 +3,103 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>聊天记录 Demo</title>
-    <link rel="stylesheet" href="styles.css" />
+    <title>AI Talent Guide – 动态引导树 Demo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <header class="app-header">
-      <div>
-        <h1>ChatGPT 对话 Demo</h1>
-        <p class="subtitle">
-          根据分享链接整理的页面示例，可以快速浏览对话要点。
-        </p>
-      </div>
-      <a
-        class="share-link"
-        href="https://chatgpt.com/share/6911b067-aa2c-8012-af9c-622d9f93e0f3"
-        target="_blank"
-        rel="noopener noreferrer"
-      >查看原始分享</a>
-    </header>
-
-    <main class="layout">
-      <aside class="context-panel">
-        <section>
-          <h2>对话背景</h2>
-          <p>
-            该对话围绕如何构建个人智能体测试 Demo 展开，重点讨论了功能模块、
-            数据结构以及前端呈现方式。本页面将核心步骤可视化，帮助开发者快速理解整体方案。
-          </p>
-        </section>
-        <section class="key-points">
-          <h2>要点速览</h2>
-          <ul id="keyPointsList"></ul>
-        </section>
-        <section>
-          <h2>导出</h2>
-          <button id="exportBtn" type="button">导出为 Markdown</button>
-        </section>
-      </aside>
-
-      <section class="conversation">
-        <div class="toolbar">
-          <input
-            id="searchInput"
-            type="search"
-            placeholder="搜索消息关键词..."
-            aria-label="搜索消息关键词"
-          />
-          <label class="toggle">
-            <input id="groupToggle" type="checkbox" />
-            <span>按主题分组</span>
-          </label>
+    <div class="app-shell">
+      <header class="app-header">
+        <div class="brand-block">
+          <h1>AI Talent Guide</h1>
+          <p class="tagline">动态引导树体验（MVP 模拟环境）</p>
         </div>
-        <div id="conversationContainer" class="conversation-container"></div>
-      </section>
-    </main>
+        <div class="progress-block" aria-label="会话进度">
+          <div class="progress-bar">
+            <span id="progressValue" style="width: 0%"></span>
+          </div>
+          <span id="progressLabel" class="progress-label">0 / 12</span>
+        </div>
+        <button id="resetBtn" type="button" class="ghost-btn">重新开始</button>
+      </header>
+
+      <main class="main-layout">
+        <aside class="insight-panel">
+          <section class="session-meta">
+            <h2>会话概览</h2>
+            <dl>
+              <div>
+                <dt>Session ID</dt>
+                <dd id="sessionId">—</dd>
+              </div>
+              <div>
+                <dt>当前状态</dt>
+                <dd id="currentState">ENTER</dd>
+              </div>
+              <div>
+                <dt>循环次数</dt>
+                <dd id="loopCount">0</dd>
+              </div>
+            </dl>
+          </section>
+          <section class="top-hypothesis">
+            <h2>天赋假说</h2>
+            <div id="hypothesisChips" class="chips"></div>
+            <p class="hint">按状态机阈值自动刷新 Top 2 维度。</p>
+          </section>
+          <section class="signals-panel">
+            <h2>信号权重</h2>
+            <ul id="signalList" class="signal-list"></ul>
+          </section>
+          <section class="actions">
+            <h2>导出与测试</h2>
+            <button id="exportMarkdownBtn" type="button" class="primary-btn">
+              导出 Markdown 报告
+            </button>
+            <button id="loadScenarioBtn" type="button" class="ghost-btn">
+              载入测试用例
+            </button>
+          </section>
+        </aside>
+
+        <section class="conversation-area">
+          <div class="conversation-header">
+            <div class="state-pill" id="statePill">ENTER</div>
+            <span class="conversation-hint"
+              >遵循 ENTER → PROBE → REFLECT → VALIDATE → FOCUS → APPLY → REPORT → LOOP</span
+            >
+          </div>
+          <div id="conversationContainer" class="conversation-container" aria-live="polite"></div>
+
+          <div id="reportPreview" class="report-preview" hidden>
+            <header>
+              <h2>画像 1.0 预览</h2>
+              <button id="toggleReportBtn" type="button" class="ghost-btn">收起</button>
+            </header>
+            <article id="reportContent" class="report-content"></article>
+          </div>
+
+          <form id="composer" class="composer" autocomplete="off">
+            <label class="sr-only" for="userInput">回复</label>
+            <textarea
+              id="userInput"
+              name="userInput"
+              rows="2"
+              placeholder="输入你的回应，Enter 发送"
+              required
+            ></textarea>
+            <div class="composer-actions">
+              <button id="sendBtn" type="submit" class="primary-btn">发送</button>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
 
     <template id="messageTemplate">
       <article class="message">
@@ -70,14 +107,18 @@
           <span class="role"></span>
           <time class="timestamp"></time>
         </header>
-        <div class="content"></div>
+        <div class="message-body">
+          <p class="state-tag"></p>
+          <div class="content"></div>
+        </div>
         <footer class="message-footer">
-          <button class="copy-btn" type="button">复制</button>
-          <span class="topic-tag"></span>
+          <button class="ghost-btn copy-btn" type="button">复制</button>
         </footer>
       </article>
     </template>
 
-    <script src="script.js"></script>
+    <div id="toast" class="toast" role="status" hidden></div>
+
+    <script src="script.js" type="module"></script>
   </body>
 </html>
